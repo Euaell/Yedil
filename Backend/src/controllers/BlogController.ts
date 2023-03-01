@@ -4,7 +4,8 @@ import Blog, { IBlog } from "../models/BlogModel"
 export default class BlogController {
 	public static async getBlogs( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const blogs: IBlog[] = await Blog.find()
+			const { user } = req.body
+			const blogs: IBlog[] = await Blog.find({author: user._id})
 			return res.status(200).json({blogs})
 		} catch (error) {
 			next(error)
@@ -13,7 +14,9 @@ export default class BlogController {
 
 	public static async getBlog( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const blog: IBlog | null = await Blog.findById(req.params.id)
+			const { user } = req.body
+			const { id } = req.params
+			const blog: IBlog | null = await Blog.findOne({_id: id, author: user._id})
 			if (blog) {
 				return res.status(200).json({blog})
 			} else {
@@ -26,7 +29,9 @@ export default class BlogController {
 
 	public static async createBlog( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const blog: IBlog = await Blog.create(req.body)
+			const { user } = req.body
+			const { Title, Content } = req.body
+			const blog: IBlog = await Blog.create({ Title, Content, author: user._id })
 			return res.status(201).json({blog})
 		} catch (error) {
 			next(error)

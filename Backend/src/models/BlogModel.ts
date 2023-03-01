@@ -3,7 +3,7 @@ import { Schema, Document, model } from "mongoose"
 export interface IBlog extends Document {
 	Title: string
 	picture: string
-	content: string
+	Content: string
 	author: Schema.Types.ObjectId
 }
 
@@ -17,7 +17,7 @@ const TodoListSchema: Schema<IBlog> = new Schema(
 			type: String,
 			required: false
 		},
-		content: {
+		Content: {
 			type: String,
 			required: true
 		},

@@ -16,7 +16,7 @@ app.use(cors())
 
 app.use("/api/v1/users", routes.UserRoute)
 app.use("/api/v1/unverified-users", routes.UnverifiedUserRoute)
-app.use("api/v1/todolist", routes.TodoListRoute)
+app.use("/api/v1/todolist", routes.TodoListRoute)
 app.use("/api/v1/blogs", routes.BlogRoute)
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {

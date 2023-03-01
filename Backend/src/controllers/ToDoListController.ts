@@ -4,7 +4,8 @@ import ToDoList, {ITodoList} from "../models/ToDoListModel"
 export default class ToDoListController {
 	public static async getToDoLists( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const toDoLists: ITodoList[] = await ToDoList.find()
+			const { user } = req.body
+			const toDoLists: ITodoList[] = await ToDoList.find({user: user._id})
 			return res.status(200).json({toDoLists})
 		} catch (error) {
 			next(error)
@@ -13,7 +14,9 @@ export default class ToDoListController {
 
 	public static async getToDoList( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const toDoList: ITodoList | null = await ToDoList.findById(req.params.id)
+			const { user } = req.body
+			const { id } = req.params
+			const toDoList: ITodoList | null = await ToDoList.findOne({_id: id, user: user._id})
 			if (toDoList) {
 				return res.status(200).json({toDoList})
 			} else {
@@ -26,7 +29,9 @@ export default class ToDoListController {
 
 	public static async createToDoList( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const toDoList: ITodoList = await ToDoList.create(req.body)
+			const { user } = req.body
+			const { Name, tasks } = req.body
+			const toDoList: ITodoList = await ToDoList.create({ Name, tasks, user: user._id })
 			return res.status(201).json({toDoList})
 		} catch (error) {
 			next(error)
@@ -35,6 +40,7 @@ export default class ToDoListController {
 
 	public static async updateToDoList( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
+			const { user } = req.body
 			const { id } = req.params
 			const toDoList: ITodoList | null = await ToDoList.findByIdAndUpdate(id, req.body, {new: true})
 			if (toDoList) {
