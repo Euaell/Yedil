@@ -30,4 +30,4 @@ const TodoListSchema: Schema<IBlog> = new Schema(
 		timestamps: true
 	})
 
-export default model<IBlog>("TodoList", TodoListSchema)
+export default model<IBlog>("Blog", TodoListSchema)
