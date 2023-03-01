@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express"
-import ToDoList, {ITodoList} from "../models/ToDoList"
+import ToDoList, {ITodoList} from "../models/ToDoListModel"
 
 export default class ToDoListController {
 	public static async getToDoLists( req: Request, res: Response, next: NextFunction ): Promise<Response> {

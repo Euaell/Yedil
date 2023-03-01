@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express"
-import User, { IUser } from "../models/User"
+import User, { IUser } from "../models/UserModel"
 
 export default class UserController {
     public static async getUsers( req: Request, res: Response, next: NextFunction ): Promise<Response> {

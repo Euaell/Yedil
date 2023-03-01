@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import Blog, { IBlog } from "../models/Blog"
+import Blog, { IBlog } from "../models/BlogModel"
 
 export default class BlogController {
 	public static async getBlogs( req: Request, res: Response, next: NextFunction ): Promise<Response> {
