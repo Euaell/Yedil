@@ -30,8 +30,6 @@ export default class UserController {
         try {
             const { Email, verificationCode, FirstName, LastName, Password } = req.body
             const Gender: GenderEnum = req.body.Gender
-            console.log("Gender: ", Gender)
-            console.log("req.body: ", req.body)
             const unverifiedUser: IUnverifiedUser | null = await UnverifiedUserModel.findOne({ email: Email })
 			if (unverifiedUser) {
                 const authMessage: string = await unverifiedUser.verifyCode(verificationCode)

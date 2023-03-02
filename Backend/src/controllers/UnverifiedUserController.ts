@@ -27,7 +27,7 @@ export default class UnverifiedUserController {
 
 	public static async createUnverifiedUser( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const {email} = req.body
+			const { email } = req.body
 
 			const user: IUser | null = await UserModel.findOne({ email })
 			if (user) {
@@ -38,6 +38,26 @@ export default class UnverifiedUserController {
 			const unverifiedUser = await UnverifiedUserModel.create({email, verificationCode})
 
 			return res.status(201).json({unverifiedUser})
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	public static async resendVerificationCode ( req: Request, res: Response, next: NextFunction ): Promise<Response> {
+		try {
+			const { email } = req.body
+
+			const unVerifiedUser: IUnverifiedUser | null = await UnverifiedUserModel.findOne({ email })
+			if (!unVerifiedUser) {
+				return res.status(400).json( {message: "User NOT Found!"} )
+			}
+			const verificationCode = Math.floor(100000 + Math.random() * 900000).toString()
+			unVerifiedUser.verificationCode = verificationCode
+
+			await unVerifiedUser.save()
+			// const newUnVerifiedUser: IUnverifiedUser = await UnverifiedUserModel.findByIdAndUpdate(unVerifiedUser._id, unVerifiedUser, { new: true })
+
+			return res.status(200).json({ unVerifiedUser })
 		} catch (error) {
 			next(error)
 		}
