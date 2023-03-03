@@ -4,6 +4,15 @@ import Blog, { IBlog } from "../models/BlogModel"
 export default class BlogController {
 	public static async getBlogs( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
+			const blogs: IBlog[] = await Blog.find()
+			return res.status(200).json({blogs})
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	public static async getBlogsByUser( req: Request, res: Response, next: NextFunction ): Promise<Response> {
+		try {
 			const { user } = req.body
 			const blogs: IBlog[] = await Blog.find({author: user._id})
 			return res.status(200).json({blogs})

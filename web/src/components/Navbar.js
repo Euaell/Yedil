@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Layout, Menu, Avatar, Button } from "antd";
 import { Outlet } from 'react-router';
 import { useNavigate } from "react-router-dom"
@@ -40,8 +40,15 @@ const menuItems = [
 ]
 
 const NavigationBar = () => {
+	const { user } = useAuth()
+
+	const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+
+	useEffect(() => {
+		setIsLoggedIn(user && user._id && user._id !== "")
+	}, [user])
+
 	const navigate = useNavigate()
-	const { user, signOut } = useAuth()
 	const goTo = (path) => {
 		console.log(path)
 		navigate(path)
@@ -62,12 +69,12 @@ const NavigationBar = () => {
 					<Menu
 						theme="dark"
 						mode="horizontal"
-						defaultSelectedKeys={["2"]}
+						defaultSelectedKeys={["1"]}
 						style={{ flexGrow: 1 }}
 					>
 
 						{menuItems.map((item) => (
-							((item.isProtected && user._id !== "") || (!item.isProtected)) &&
+							((item.isProtected && isLoggedIn) || (!item.isProtected)) &&
 								<Menu.Item key={item.key}>
 									<Button
 										type={"text"}
@@ -83,11 +90,11 @@ const NavigationBar = () => {
 					</Menu>
 
 					<div style={{ flexShrink: 0 }}>
-						{user._id !== "" &&
+						{isLoggedIn &&
 							<Avatar size="large" src="https://i.pravatar.cc/50" />
 						}
 
-						{user._id === "" &&
+						{!isLoggedIn &&
 							<div style={{ display: "flex", flexDirection: "row" }}>
 								<Button
 									type={"text"}

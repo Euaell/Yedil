@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -7,7 +6,7 @@ const getFreshUser = () => {
 	if (localStorage.getItem("user") === null) {
 		localStorage.setItem("user", JSON.stringify({
 			_id: "",
-			FistName: "",
+			FirstName: "",
 			LastName: "",
 			Email: "",
 			Role: "normal"
@@ -18,7 +17,19 @@ const getFreshUser = () => {
 }
 
 export function useAuth() {
-	return useContext(AuthContext);
+	const { user, setUser } = useContext(AuthContext)
+	return {
+		user,
+		setUser: obj => {
+			setUser({ ...user, ...obj })
+			localStorage.setItem("user", JSON.stringify({ ...user, ...obj }))
+		},
+		resetUser: () => {
+			setUser(getFreshUser())
+			localStorage.setItem("user", JSON.stringify(getFreshUser()))
+		}
+	}
+	// return useContext(AuthContext);
 }
 
 export function AuthProvider({ children }) {
@@ -35,24 +46,7 @@ export function AuthProvider({ children }) {
 		localStorage.setItem('user', JSON.stringify(user))
 	}, [user])
 
-	async function signIn(email, password) {
-		try {
-			const response = await axios.post('/api/auth/signin', { email, password });
-			const user = response.data;
-			localStorage.setItem('user', JSON.stringify(user));
-			setUser(user);
-		} catch (error) {
-		  console.error(error);
-		  throw error;
-		}
-	}
-
-	function signOut() {
-		localStorage.removeItem('user');
-		setUser(null);
-	}
-
-	const value = { user, signIn, signOut };
+	const value = { user, setUser };
 
 	return (
 		<AuthContext.Provider value={value}>

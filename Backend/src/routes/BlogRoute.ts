@@ -4,7 +4,8 @@ import Authenticate from "../middlewares/Authenticate";
 
 const router = Router()
 
-router.get("/", Authenticate.authenticate, BlogController.getBlogs)
+router.get("/", BlogController.getBlogs)
+router.get("/myBlogs", Authenticate.authenticate, BlogController.getBlogsByUser)
 router.post("/", Authenticate.authenticate, BlogController.createBlog)
 router.get("/:id", Authenticate.authenticate, BlogController.getBlog)
 router.put("/:id", Authenticate.authenticate, BlogController.updateBlog)

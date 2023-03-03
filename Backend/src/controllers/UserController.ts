@@ -34,7 +34,7 @@ export default class UserController {
 			if (unverifiedUser) {
                 const authMessage: string = await unverifiedUser.verifyCode(verificationCode)
                 if (authMessage !== "Success") {
-                    return res.status(400).json({message: authMessage})
+                    return res.status(400).json({verificationCode: authMessage})
                 }
                 await UnverifiedUserModel.findByIdAndDelete(unverifiedUser._id)
 			} else {
@@ -50,14 +50,14 @@ export default class UserController {
 
     public static async loginUser( req: Request, res: Response, next: NextFunction ): Promise<Response> {
         try {
-            const {Email, Password} = req.body
+            const { Email, Password } = req.body
             const user: IUser | null = await UserModel.findOne({Email})
             if (!user) {
-                return res.status(400).json({message: "Incorrect Credentials"})
+                return res.status(400).json({Email: "Email not found"})
             }
             const authMessage: boolean = await user.ComparePassword(Password)
             if (!authMessage) {
-                return res.status(400).json({message: "Incorrect Password"})
+                return res.status(400).json({Password: "Incorrect Password"})
             }
             const userObj = user.toObject()
 			delete userObj.Password

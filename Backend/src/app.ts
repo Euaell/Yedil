@@ -12,7 +12,11 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"))
-app.use(cors())
+app.use(cors({
+	origin: true,
+	credentials: true,
+	exposedHeaders: ["token"]
+}))
 
 app.use("/api/v1/users", routes.UserRoute)
 app.use("/api/v1/unverified-users", routes.UnverifiedUserRoute)

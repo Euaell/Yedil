@@ -27,15 +27,15 @@ export default class UnverifiedUserController {
 
 	public static async createUnverifiedUser( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const { email } = req.body
+			const { Email } = req.body
 
-			const user: IUser | null = await UserModel.findOne({ email })
+			const user: IUser | null = await UserModel.findOne({ Email })
 			if (user) {
-				return res.status(400).json({message: "User already exists"})
+				return res.status(400).json({Email: "User already exists"})
 			}
 
 			const verificationCode = Math.floor(100000 + Math.random() * 900000).toString()
-			const unverifiedUser = await UnverifiedUserModel.create({email, verificationCode})
+			const unverifiedUser = await UnverifiedUserModel.create({ email: Email, verificationCode})
 
 			return res.status(201).json({unverifiedUser})
 		} catch (error) {
@@ -45,17 +45,16 @@ export default class UnverifiedUserController {
 
 	public static async resendVerificationCode ( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const { email } = req.body
+			const { Email } = req.body
 
-			const unVerifiedUser: IUnverifiedUser | null = await UnverifiedUserModel.findOne({ email })
+			const unVerifiedUser: IUnverifiedUser | null = await UnverifiedUserModel.findOne({ email: Email })
 			if (!unVerifiedUser) {
-				return res.status(400).json( {message: "User NOT Found!"} )
+				return res.status(400).json( {Email: "User NOT Found!"} )
 			}
 			const verificationCode = Math.floor(100000 + Math.random() * 900000).toString()
 			unVerifiedUser.verificationCode = verificationCode
 
 			await unVerifiedUser.save()
-			// const newUnVerifiedUser: IUnverifiedUser = await UnverifiedUserModel.findByIdAndUpdate(unVerifiedUser._id, unVerifiedUser, { new: true })
 
 			return res.status(200).json({ unVerifiedUser })
 		} catch (error) {
