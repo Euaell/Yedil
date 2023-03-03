@@ -3,17 +3,14 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const AuthContext = createContext();
 
 const getFreshUser = () => {
-	if (localStorage.getItem("user") === null) {
-		localStorage.setItem("user", JSON.stringify({
-			_id: "",
-			FirstName: "",
-			LastName: "",
-			Email: "",
-			Role: "normal"
-		}))
+	return {
+		_id: "",
+		FirstName: "",
+		LastName: "",
+		Email: "",
+		Role: "normal",
+		Avatar: "https://i.pravatar.cc/50",
 	}
-
-	return JSON.parse(localStorage.getItem("user"))
 }
 
 export function useAuth() {

@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
-import { Layout, Menu, Avatar, Button } from "antd";
+import {Layout, Menu, Avatar, Button, Dropdown} from "antd";
 import { Outlet } from 'react-router';
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/AuthenticateHook";
+import {createAPIEndpoint, ENDPOINTS} from "../api";
 
 const { Header, Content, Footer } = Layout;
 
@@ -72,7 +73,7 @@ const NavigationBar = () => {
 						defaultSelectedKeys={["1"]}
 						style={{ flexGrow: 1 }}
 					>
-
+						{/*TODO: fix selection problem*/}
 						{menuItems.map((item) => (
 							((item.isProtected && isLoggedIn) || (!item.isProtected)) &&
 								<Menu.Item key={item.key}>
@@ -91,7 +92,12 @@ const NavigationBar = () => {
 
 					<div style={{ flexShrink: 0 }}>
 						{isLoggedIn &&
-							<Avatar size="large" src="https://i.pravatar.cc/50" />
+							<Dropdown
+								overlay={<ProfileDropdown />}
+								trigger={['click']}
+							>
+								<Avatar size="large" src={user.Avatar} />
+							</Dropdown>
 						}
 
 						{!isLoggedIn &&
@@ -129,5 +135,55 @@ const NavigationBar = () => {
 		</Layout>
 	);
 };
+
+
+
+const ProfileDropdown = () => {
+	const { resetUser } = useAuth()
+	const navigate = useNavigate()
+	const goTo = (path) => {
+		console.log(path)
+		navigate(path)
+	}
+	function logout() {
+		console.log("logout")
+		createAPIEndpoint(ENDPOINTS.user.get.logout)
+			.fetchAll()
+			.then((res) => {
+				console.log(res)
+				goTo("/home")
+				resetUser()
+			})
+			.catch(console.error)
+	}
+
+	return (
+		<Menu>
+			<Menu.Item
+				key="0"
+				style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}
+				onClick={() => goTo("/profile")}
+			>
+				Profile
+			</Menu.Item>
+
+			<Menu.Item
+				key="1"
+				style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}
+				onClick={() => goTo("/settings")}
+			>
+				Settings
+			</Menu.Item>
+			<Menu.Divider />
+			<Menu.Item
+				key="4"
+				style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}
+				onClick={() => logout()}
+			>
+				Logout
+			</Menu.Item>
+		</Menu>
+	)
+}
 
 export default NavigationBar;
