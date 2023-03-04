@@ -22,6 +22,7 @@ app.use("/api/v1/users", routes.UserRoute)
 app.use("/api/v1/unverified-users", routes.UnverifiedUserRoute)
 app.use("/api/v1/todolist", routes.TodoListRoute)
 app.use("/api/v1/blogs", routes.BlogRoute)
+app.use("/api/v1/tags", routes.TagRoute)
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
     res.status(200).json({ message: "Hello World!" })

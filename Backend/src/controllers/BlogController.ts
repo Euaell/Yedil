@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import Blog, { IBlog } from "../models/BlogModel"
+import {Schema} from "mongoose";
+import TagModel, {ITag} from "../models/TagModel";
 
 export default class BlogController {
 	public static async getBlogs( req: Request, res: Response, next: NextFunction ): Promise<Response> {
@@ -39,8 +41,25 @@ export default class BlogController {
 	public static async createBlog( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
 			const { user } = req.body
-			const { Title, Content } = req.body
-			const blog: IBlog = await Blog.create({ Title, Content, author: user._id })
+			const { Title, Content, Tags } : { Title: string, Content: string, Tags: string[] } = req.body
+
+			const tags: Schema.Types.ObjectId[] = await Promise.all(Tags.map( async (tag: string) : Promise<Schema.Types.ObjectId> => {
+				const DbTag: ITag = await TagModel.findOne({ Name: tag })
+
+				if (DbTag) {
+					return DbTag._id
+				} else {
+					const newTag: ITag = await TagModel.create({ Name: tag, Blogs: [] })
+					return newTag._id
+				}
+			}))
+
+			const blog: IBlog = await Blog.create({ Title, Content, author: user._id, Tags: tags })
+
+			for (const tag of tags) {
+				await TagModel.findByIdAndUpdate(tag, { $push: { Blogs: blog._id } })
+			}
+
 			return res.status(201).json({blog})
 		} catch (error) {
 			next(error)
