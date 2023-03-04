@@ -32,6 +32,7 @@ const MyBlogs = () => {
 	return (
 		<Spin spinning={loading}>
 			{blogs.map((blog) => (
+				// TODO: add delete and edit buttons
 				<Card
 					hoverable
 					onClick={() => onBlogClick(blog)}
@@ -88,6 +89,7 @@ const freshBlogModel = {
 }
 
 const CreateBlog = () => {
+	// TODO: add save to local storage feature
 	const [tagOptions, setTagOptions] = React.useState([])
 	const [markdown, setMarkdown] = React.useState('');
 

@@ -98,6 +98,7 @@ const NavigationBar = () => {
 							>
 								<Avatar
 									size="large"
+									// size={50}
 									src={user.Avatar}
 								/>
 							</Dropdown>
