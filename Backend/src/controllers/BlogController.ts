@@ -6,7 +6,7 @@ import TagModel, {ITag} from "../models/TagModel";
 export default class BlogController {
 	public static async getBlogs( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
-			const blogs: IBlog[] = await Blog.find()
+			const blogs: IBlog[] = await Blog.find().populate("author").populate("Tags")
 			return res.status(200).json({blogs})
 		} catch (error) {
 			next(error)
@@ -16,7 +16,7 @@ export default class BlogController {
 	public static async getBlogsByUser( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
 			const { user } = req.body
-			const blogs: IBlog[] = await Blog.find({author: user._id})
+			const blogs: IBlog[] = await Blog.find({author: user._id}).populate("author").populate("Tags")
 			return res.status(200).json({blogs})
 		} catch (error) {
 			next(error)

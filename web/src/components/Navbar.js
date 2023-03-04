@@ -96,7 +96,10 @@ const NavigationBar = () => {
 								overlay={<ProfileDropdown />}
 								trigger={['click']}
 							>
-								<Avatar size="large" src={user.Avatar} />
+								<Avatar
+									size="large"
+									src={user.Avatar}
+								/>
 							</Dropdown>
 						}
 

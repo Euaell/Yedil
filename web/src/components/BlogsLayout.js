@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Card, Spin } from 'antd';
+import {Layout, Card, Spin, Avatar, Tag} from 'antd';
 import { createAPIEndpoint, ENDPOINTS } from "../api";
 
 const { Sider, Content } = Layout;
@@ -54,20 +54,51 @@ const Blogs = () => {
 	}
 
 	return (
-		<>
-			<Spin spinning={loading}>
-				{blogs.map((blog) => (
-					<Card
-						hoverable
-						onClick={() => onBlogClick(blog)}
-						style={{width: 200, margin: '5pt', display: 'inline-block',}}
-						cover={blog.Picture ? <img alt="example" src={blog.Picture}/> :
-							<img alt="random" src={"https://picsum.photos/200/300"}/>}
+		<Spin spinning={loading}>
+			{blogs.map((blog) => (
+				<Card
+					hoverable
+					onClick={() => onBlogClick(blog)}
+					style={{width: 250, margin: '5pt', display: 'inline-block',}}
+					cover={blog.Picture ? <img alt="example" src={blog.Picture} height={"200px"}/> :
+						<img alt="random" src={"https://picsum.photos/200/300"} height={"200px"}/>}
+				>
+					<Meta
+						style={{borderBottom: '1pt solid #00000038', width: '100%', marginBottom: '15pt'}}
+						avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
+						title={blog.Title}
+						description={`By ${blog.author.FirstName} ${blog.author.LastName}`}
+					/>
+					<div
+						style={{
+								display: 'block',
+								width: '100%',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+								marginBottom: '15pt',
+							}}
 					>
-						<Meta title={blog.Title} description={blog.description}/>
-					</Card>
-				))}
-			</Spin>
-		</>
+						{ blog.Description }
+					</div>
+
+					<div
+						style={{
+								display: 'flex',
+								flexFlow: 'row wrap',
+								marginBottom: '15pt',
+							}}
+					>
+						{blog.Tags.map((tag) => (
+							<Tag
+								style={{ margin: '2pt 2pt' }}
+								color="green">
+								{tag.Name}
+							</Tag>
+						))}
+					</div>
+				</Card>
+			))}
+		</Spin>
 	);
 }

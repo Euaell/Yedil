@@ -1,6 +1,6 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../api";
-import {Card, Spin, Layout, Menu, Form, Input, Button, Upload, Select} from "antd";
+import {Card, Spin, Layout, Menu, Form, Input, Button, Upload, Select, Avatar, Tag} from "antd";
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import {UploadOutlined} from "@ant-design/icons";
@@ -30,23 +30,52 @@ const MyBlogs = () => {
 	}
 
 	return (
-		<>
-			<Spin spinning={loading}>
-				{blogs.length !== 0 ? blogs.map((blog) => (
-					<Card
-						hoverable
-						onClick={() => onBlogClick(blog)}
-						style={{width: 200, margin: '5pt', display: 'inline-block',}}
-						cover={blog.Picture ? <img alt="example" src={blog.Picture}/> :
-							<img alt="random" src={"https://picsum.photos/200/300"}/>}
+		<Spin spinning={loading}>
+			{blogs.map((blog) => (
+				<Card
+					hoverable
+					onClick={() => onBlogClick(blog)}
+					style={{width: 250, margin: '5pt', display: 'inline-block' }}
+					cover={blog.Picture ? <img alt="example" src={blog.Picture} height={"200px"}/> :
+						<img alt="random" src={"https://picsum.photos/200/300"} height={"200px"}/>}
+				>
+					<Meta
+						style={{borderBottom: '1pt solid #00000038', width: '100%', marginBottom: '15pt'}}
+						avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
+						title={blog.Title}
+						description={`By ${blog.author.FirstName} ${blog.author.LastName}`}
+					/>
+					<div
+						style={{
+								display: 'block',
+								width: '100%',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+								marginBottom: '15pt',
+							}}
 					>
-						<Meta title={blog.Title} description={blog.description}/>
-					</Card>
-				)) :
-					<h1 style={{textAlign: 'center'}}>No Blogs Found</h1>
-				}
-			</Spin>
-		</>
+						{ blog.Description }
+					</div>
+
+					<div
+						style={{
+								display: 'flex',
+								flexFlow: 'row wrap',
+								marginBottom: '15pt',
+							}}
+					>
+						{blog.Tags.map((tag) => (
+							<Tag
+								style={{ margin: '2pt 2pt' }}
+								color="green">
+								{tag.Name}
+							</Tag>
+						))}
+					</div>
+				</Card>
+			))}
+		</Spin>
 	);
 }
 
