@@ -43,6 +43,14 @@ export const ENDPOINTS = {
 		post: {
 			create: 'todolist'
 		}
+	},
+	tags: {
+		get: {
+			all: 'tags'
+		},
+		post: {
+			create: 'tags'
+		}
 	}
 
 }

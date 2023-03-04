@@ -125,7 +125,7 @@ const NavigationBar = () => {
 
 			</Header>
 
-			<Content style={{ padding: "0 50px", minHeight: "calc(100vh - 134px)" }}>
+			<Content style={{ padding: "0", minHeight: "calc(100vh - 134px)" }}>
 				<Outlet />
 			</Content>
 

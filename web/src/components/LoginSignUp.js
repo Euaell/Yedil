@@ -88,6 +88,7 @@ const Login = () => {
 						<h2 style={{ textAlign: "center" }}>Login</h2>
 					</Form.Item>
 					<Form.Item
+						validateStatus={errors.Email && errors.Email !== "" ? "error" : "success"}
 						help={errors.Email}
 					>
 						<Input
@@ -100,6 +101,7 @@ const Login = () => {
 						/>
 					</Form.Item>
 					<Form.Item
+						validateStatus={errors.Password && errors.Password !== "" ? "error" : "success"}
 						help={errors.Password}
 					>
 						<Input.Password
@@ -239,6 +241,7 @@ const Signup = () => {
 					<Row gutter={8}>
 						<Col span={15}>
 							<Form.Item
+								validateStatus={errors.Email && errors.Email !== "" ? "error" : "success"}
 								help={errors.Email}
 							>
 								<Input
@@ -260,6 +263,7 @@ const Signup = () => {
 					<Row gutter={8}>
 						<Col span={12}>
 							<Form.Item
+								validateStatus={ errors.FirstName && errors.FirstName !== "" ? "error" : "success"}
 								help={errors.FirstName}
 							>
 								<Input
@@ -272,6 +276,7 @@ const Signup = () => {
 						</Col>
 						<Col span={12}>
 							<Form.Item
+								validateStatus={errors.LastName && errors.LastName !== "" ? "error" : "success"}
 								help={errors.LastName}
 							>
 								<Input
@@ -287,6 +292,7 @@ const Signup = () => {
 					<Row gutter={8}>
 						<Col span={14}>
 							<Form.Item
+								validateStatus={errors.verificationCode && errors.verificationCode !== "" ? "error" : "success"}
 								help={errors.verificationCode}
 							>
 								<Input
@@ -300,12 +306,15 @@ const Signup = () => {
 						</Col>
 						<Col span={10}>
 							<Form.Item
+								validateStatus={errors.Gender && errors.Gender !== "" ? "error" : "success"}
 								help={errors.Gender}
+								rules={[{ required: true }]}
 							>
 								<Select
 									name={"Gender"}
 									onChange={(value) => {setInputs({...inputs, Gender: value})}}
 									placeholder={"Gender"}
+									allowClear
 								>
 									{/*TODO: placeholder*/}
 									<Option value="male">Male</Option>
@@ -316,6 +325,7 @@ const Signup = () => {
 					</Row>
 
 					<Form.Item
+						validateStatus={errors.Password && errors.Password !== "" ? "error" : "success"}
 						help={errors.Password}
 					>
 						<Input.Password
@@ -326,6 +336,7 @@ const Signup = () => {
 						/>
 					</Form.Item>
 					<Form.Item
+						validateStatus={errors.ConfirmPassword && errors.ConfirmPassword !== "" ? "error" : "success"}
 						help={errors.ConfirmPassword}
 					>
 						<Input.Password
