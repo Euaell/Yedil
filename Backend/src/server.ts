@@ -3,7 +3,7 @@ import app from './app'
 import mongoose from 'mongoose'
 
 
-mongoose.connect(`${configs.MONGO_URI}/${configs.MONGO_DB}`)
+mongoose.connect(`${configs.MONGO_URI}/${configs.MONGO_DB}?retryWrites=true&w=majority`)
     .then(() => {
         console.log("Connected to MongoDB ...")
         app.listen(configs.PORT, () => {
