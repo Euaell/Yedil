@@ -26,7 +26,7 @@ const freshSignUpModel = {
 }
 
 const Login = () => {
-	const { setUser } = useAuth()
+	const { setUser, setToken } = useAuth()
 	const navigate = useNavigate()
 
 	const { inputs, handleChange, errors, setErrors } = useForm(freshLoginModel)
@@ -46,6 +46,7 @@ const Login = () => {
 				.then(res => res.data)
 				.then(res => {
 					setUser(res.user)
+					setToken(res.token)
 					navigate("/home")
 				})
 				.catch(err => {

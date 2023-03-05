@@ -13,8 +13,18 @@ const getFreshUser = () => {
 	}
 }
 
+const getFreshToken = () => {
+    if (localStorage.getItem("token") === null) {
+        localStorage.setItem("token", null)
+    }
+
+    return localStorage.getItem("token");
+}
+
 export function useAuth() {
 	const { user, setUser } = useContext(AuthContext)
+	const {token, setToken} = useContext(AuthContext);
+
 	return {
 		user,
 		setUser: obj => {
@@ -24,6 +34,15 @@ export function useAuth() {
 		resetUser: () => {
 			setUser(getFreshUser())
 			localStorage.setItem("user", JSON.stringify(getFreshUser()))
+		},
+		token,
+		setToken: obj => {
+			setToken(obj)
+			localStorage.setItem("token", obj)
+		},
+		resetToken: () => {
+			setToken(getFreshToken())
+			localStorage.removeItem("token")
 		}
 	}
 	// return useContext(AuthContext);
@@ -31,6 +50,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
 	const [user, setUser] = useState(getFreshUser());
+	const [token, setToken] = useState(getFreshToken());
 
 	useEffect(() => {
 		const storedUser = localStorage.getItem('user');
@@ -43,7 +63,11 @@ export function AuthProvider({ children }) {
 		localStorage.setItem('user', JSON.stringify(user))
 	}, [user])
 
-	const value = { user, setUser };
+	useEffect(() => {
+        localStorage.setItem("token", token);
+    }, [token]);
+
+	const value = { user, setUser, token, setToken };
 
 	return (
 		<AuthContext.Provider value={value}>

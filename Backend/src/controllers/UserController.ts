@@ -67,7 +67,8 @@ export default class UserController {
             res.cookie("token", token, {httpOnly: true})
             return res.status(200).json({
                 user: userObj,
-                message: "Logged in"
+                message: "Logged in",
+                token
             })
         } catch (error) {
             next(error)

@@ -72,6 +72,7 @@ export const ENDPOINTS = {
 
 export const createAPIEndpoint = (endpoint) => {
 	let url = `${BASE_URL}/${endpoint}`
+	api.defaults.headers.token = localStorage.getItem('token') || null
 
 	return {
 		fetchAll: () => api.get(url),
