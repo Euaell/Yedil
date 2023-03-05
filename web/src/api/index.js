@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:3991/api/v1'
+const BASE_URL = 'https://yedil.onrender.com/api/v1'
 
 axios.defaults.withCredentials = true
 axios.defaults.credentials = "include"
