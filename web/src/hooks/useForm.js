@@ -1,12 +1,15 @@
 import { useState } from 'react'
 
-export default function useForm(initial = {}) {
+export default function useForm(initial = {}, formName = "") {
 	// Create a state object for our inputs
-	const [inputs, setInputs] = useState(initial)
+	const [inputs, setInputs] = useState(formName ? JSON.parse(localStorage.getItem(formName)) || initial : initial)
 	const [errors, setErrors] = useState({})
 
 	function resetForm() {
 		setInputs(initial)
+		if (formName) {
+			localStorage.removeItem(formName)
+		}
 	}
 	function clearForm() {
 		const blankState = Object.fromEntries(
@@ -27,6 +30,9 @@ export default function useForm(initial = {}) {
 			...inputs,
 			[name]: value,
 		})
+		if (formName) {
+			localStorage.setItem(formName, JSON.stringify(inputs))
+		}
 	}
 
 	// Return the things we want to surface from this custom hook

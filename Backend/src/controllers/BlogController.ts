@@ -85,9 +85,9 @@ export default class BlogController {
 		try {
 			const blog: IBlog | null = await Blog.findByIdAndDelete(req.params.id)
 			if (blog) {
-				return res.status(200).json({blog})
+				return res.status(200).json({ message: "Blog deleted", blog })
 			} else {
-				return res.status(404).json({message: "Blog not found"})
+				return res.status(404).json({ message: "Blog not found" })
 			}
 		} catch (error) {
 			next(error)

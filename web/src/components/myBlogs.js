@@ -1,9 +1,14 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../api";
-import {Card, Spin, Layout, Menu, Form, Input, Button, Upload, Select, Avatar, Tag, message} from "antd";
+import {Card, Spin, Layout, Menu, Form, Input, Button, Upload, Select, Tag, message} from "antd";
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
-import {UploadOutlined} from "@ant-design/icons";
+import {
+	DeleteTwoTone,
+	EditOutlined,
+	EllipsisOutlined,
+	UploadOutlined
+} from "@ant-design/icons";
 import useForm from "../hooks/useForm";
 import {useNavigate} from "react-router-dom";
 
@@ -29,22 +34,43 @@ const MyBlogs = () => {
 		console.log(blog)
 	}
 
+	function onBlogDelete(id) {
+		console.log(`Deleting blog with id: ${id}`)
+		createAPIEndpoint(ENDPOINTS.blog.delete.deletebyId)
+			.delete(id)
+			.then((res) => {
+				console.log(res.data)
+				message.success(res.data.message)
+				setBlogs(blogs.filter((blog) => blog._id !== id))
+			})
+			.catch((err) => console.log(err))
+	}
+
+	function onBlogEdit(blog) {
+		console.log(`Editing blog with id: ${blog._id}`)
+	}
+
 	return (
 		<Spin spinning={loading}>
 			{blogs.map((blog) => (
-				// TODO: add delete and edit buttons
+
 				<Card
+					key={blog._id}
 					hoverable
 					onClick={() => onBlogClick(blog)}
 					style={{width: 250, margin: '5pt', display: 'inline-block' }}
 					cover={blog.Picture ? <img alt="example" src={blog.Picture} height={"200px"}/> :
 						<img alt="random" src={"https://picsum.photos/200/300"} height={"200px"}/>}
+					actions={[
+						<DeleteTwoTone twoToneColor="#f62222" key="delete" onClick={() => onBlogDelete(blog._id)} />,
+						<EditOutlined key="edit" onClick={() => onBlogEdit(blog)}/>,
+						<EllipsisOutlined key="ellipsis" />,
+]					}
 				>
 					<Meta
-						style={{borderBottom: '1pt solid #00000038', width: '100%', marginBottom: '15pt'}}
-						avatar={<Avatar src="https://joesch.moe/api/v1/random" />}
+						style={{borderBottom: '1pt solid #00000038', width: '100%', marginBottom: '15pt', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}
 						title={blog.Title}
-						description={`By ${blog.author.FirstName} ${blog.author.LastName}`}
+						description={blog.Description}
 					/>
 					<div
 						style={{
@@ -56,7 +82,7 @@ const MyBlogs = () => {
 								marginBottom: '15pt',
 							}}
 					>
-						{ blog.Description }
+						{ blog.Content }
 					</div>
 
 					<div
@@ -90,13 +116,16 @@ const freshBlogModel = {
 
 const CreateBlog = () => {
 	// TODO: add save to local storage feature
+	//       currently, if page is refreshed or closed, data is stored in localStorage using useForm hook
+	//       it also stores the data in the state input state when reloaded
+	//		 but it doesn't show up in the form
 	const [tagOptions, setTagOptions] = React.useState([])
 	const [markdown, setMarkdown] = React.useState('');
 	const [file, setFile] = React.useState(null);
 
 	const navigate = useNavigate()
 
-	const { inputs, handleChange, setInputs, errors, setErrors } = useForm(freshBlogModel)
+	const { inputs, handleChange, setInputs, errors, setErrors, resetForm } = useForm(freshBlogModel, "blog")
 
 	React.useEffect(() => {
 		createAPIEndpoint(ENDPOINTS.tags.get.all)
@@ -116,6 +145,7 @@ const CreateBlog = () => {
 				.then((res) => {
 					console.log(res)
 					navigate('/blogs')
+					resetForm()
 				})
 				.catch((err) => {
 					console.log(err.response.data)
@@ -128,6 +158,7 @@ const CreateBlog = () => {
 	};
 
 	const handleMarkdownChange = (event) => {
+		console.log(inputs)
 		handleChange(event)
 		setMarkdown(event.target.value);
 	};
@@ -146,6 +177,7 @@ const CreateBlog = () => {
 		temp.Description = inputs.Description ? "" : "This field is required."
 		temp.Content = inputs.Content ? "" : "This field is required."
 		temp.Tags = inputs.Tags && inputs.Tags.length > 0 && inputs.Tags[0] !== '' ? "" : "This field is required."
+		temp.Picture = inputs.Picture ? "" : "This field is required."
 		setErrors({
 			...temp
 		})
@@ -176,6 +208,14 @@ const CreateBlog = () => {
 				console.log(err)
 				message.error('File upload failed.');
 			})
+	}
+
+	function handleFileRemove() {
+		setFile(null)
+		setInputs({
+			...inputs,
+			"Picture": ''
+		})
 	}
 
 	return (
@@ -241,7 +281,10 @@ const CreateBlog = () => {
 						label="Upload"
 						valuePropName="fileList"
 						getValueFromEvent={normFile}
-						extra="You can Include Thumbnail images which is optional"
+						extra="Include a Thumbnail image."
+						required={true}
+						help={errors.Picture}
+						validateStatus={errors.Picture && errors.Picture.length > 0 ? "error" : "success"}
 					>
 						<Upload
 							name="Picture"
@@ -250,6 +293,7 @@ const CreateBlog = () => {
 								handleFileUpload(file)
 								return false
 							}}
+							onRemove={handleFileRemove}
 							listType="picture"
 							multiple={false}
 							accept={"image/*"}

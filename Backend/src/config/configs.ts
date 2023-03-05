@@ -10,6 +10,9 @@ const PASS = process.env.PASSWORD
 const JWT_SECRET = process.env.JWT_SECRET || 'secret'
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h'
 
+const CLOUDINARY_NAME = process.env.CLOUDINARY_NAME
+const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY
+const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET
 
 export default {
     PORT,
@@ -19,5 +22,8 @@ export default {
     EMAIL,
     PASS,
     JWT_SECRET,
-    JWT_EXPIRES_IN
+    JWT_EXPIRES_IN,
+    CLOUDINARY_NAME,
+    CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET
 }

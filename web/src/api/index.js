@@ -33,6 +33,9 @@ export const ENDPOINTS = {
 		},
 		post: {
 			create: 'blogs'
+		},
+		delete: {
+			deletebyId: 'blogs'
 		}
 	},
 	todo: {
