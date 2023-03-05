@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import {Card, Button, List, Checkbox, Form, Input, DatePicker, Popconfirm, message, Divider} from 'antd';
+import {Card, Button, List, Checkbox, Form, Input, DatePicker, Popconfirm, message, Divider, Alert} from 'antd';
 import {createAPIEndpoint, ENDPOINTS} from "../api";
+import {CloseCircleTwoTone} from "@ant-design/icons";
 
 const TodoList = () => {
 	const [todos, setTodos] = useState([]);
 	const [formVisible, setFormVisible] = useState(false);
+	const [messageApi, contextHolder] = message.useMessage();
+
+	const [suggestion, setSuggestion] = useState('');
+	const [suggestedItem, setSuggestedItem] = useState(-1);
 
 	React.useEffect(() => {
 		createAPIEndpoint(ENDPOINTS.todo.get.all)
@@ -67,7 +72,28 @@ const TodoList = () => {
 
 	// Handler for 'Ask How' button
 	const handleAskHow = (todoIndex) => {
-		message.info(`How are you doing with '${todos[todoIndex].name}'?`);
+		// message.info(`How are you doing with '${todos[todoIndex].Name}'?`);
+		messageApi.open({
+			type: 'loading',
+			content: 'Getting suggestions...',
+			duration: 0,
+		});
+		createAPIEndpoint(ENDPOINTS.todo.get.suggestions)
+			.fetchById(todos[todoIndex]._id)
+			.then(res => {
+				console.log(res.data)
+				setSuggestion(res.data.Suggestion);
+				setSuggestedItem(todoIndex);
+				messageApi.destroy()
+			})
+			.catch(err => {
+				console.log(err)
+				messageApi.open({
+					type: 'error',
+					content: 'Something went wrong. Please try again later.',
+					duration: 2,
+				});
+			});
 	};
 
 	return (
@@ -77,41 +103,58 @@ const TodoList = () => {
 					itemLayout="vertical"
 					dataSource={todos}
 					renderItem={(todo, todoIndex) => (
-						<List.Item
-							key={todo._id}
-							actions={[
-								<Checkbox.Group
-									options={todo.Tasks.map((task, taskIndex) => ({
-										label: task.Description,
-										value: `${todoIndex}-${taskIndex}`,
-										disabled: task.isCompleted,
-									}))}
-									onChange={(checkedValues) => {
-										checkedValues.forEach((value) => {
-											const [i, j] = value.split('-');
-											handleTaskFinish(parseInt(i), parseInt(j));
-										});
-									}}
-									// disabled and checked
-									defaultValue={todo.Tasks.map((task, taskIndex) => {
-										if (task.isCompleted) {
-											return `${todoIndex}-${taskIndex}`;
-										}
-										return null;
-									})}
-								/>,
-								<Popconfirm
-									title={`Are you sure you want to remove '${todo.Name}'?`}
-									onConfirm={() => handleRemoveTodo(todoIndex)}
-								>
-									<Button type="danger">Remove</Button>
-								</Popconfirm>,
-								<Button onClick={() => handleAskHow(todoIndex)}>Ask How</Button>,
-							]}
-						>
-							{/*<div style={{ fontSize: "large", fontWeight: "600" }}>{ todo.Name }</div>*/}
-							<List.Item.Meta title={todo.Name} description={(new Date(todo.Deadline).toDateString())} />
-						</List.Item>
+						<>
+							<List.Item
+								key={todo._id}
+								actions={[
+									<Checkbox.Group
+										options={todo.Tasks.map((task, taskIndex) => ({
+											label: task.Description,
+											value: `${todoIndex}-${taskIndex}`,
+											disabled: task.isCompleted,
+										}))}
+										onChange={(checkedValues) => {
+											checkedValues.forEach((value) => {
+												const [i, j] = value.split('-');
+												handleTaskFinish(parseInt(i), parseInt(j));
+											});
+										}}
+										// disabled and checked
+										defaultValue={todo.Tasks.map((task, taskIndex) => {
+											if (task.isCompleted) {
+												return `${todoIndex}-${taskIndex}`;
+											}
+											return null;
+										})}
+									/>,
+									<Popconfirm
+										title={`Are you sure you want to remove '${todo.Name}'?`}
+										onConfirm={() => handleRemoveTodo(todoIndex)}
+									>
+										{contextHolder}
+										<Button type="danger">Remove</Button>
+									</Popconfirm>,
+									<Button onClick={() => handleAskHow(todoIndex)}>Ask How</Button>,
+								]}
+							>
+								{/*<div style={{ fontSize: "large", fontWeight: "600" }}>{ todo.Name }</div>*/}
+								<List.Item.Meta title={todo.Name} description={(new Date(todo.Deadline).toDateString())} />
+							</List.Item>
+							<Alert
+								message="Suggestion"
+								description={suggestedItem === todoIndex ? suggestion: ''}
+								type="info"
+								closable
+								showIcon
+								style={{ display: suggestedItem === todoIndex ? 'flex' : 'none' }}
+								closeIcon={<CloseCircleTwoTone onClick={
+									() => {
+										setSuggestedItem(-1);
+										setSuggestion('');
+									}
+								}/>}
+							/>
+						</>
 					)}
 				/>
 				<Divider />

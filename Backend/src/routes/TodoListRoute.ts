@@ -7,6 +7,7 @@ const router = Router()
 router.get("/", Authenticate.authenticate, ToDoListController.getToDoLists)
 router.post("/", Authenticate.authenticate, ToDoListController.createToDoList)
 router.get("/:id", Authenticate.authenticate, ToDoListController.getToDoList)
+router.get("/tasks/:id", Authenticate.authenticate, ToDoListController.giveHelpForToDoList)
 
 // TODO: check if the user is an admin or the user himself
 router.put("/tasks/:id", Authenticate.authenticate, ToDoListController.updateToDoListTasks)

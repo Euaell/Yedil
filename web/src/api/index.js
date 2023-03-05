@@ -41,7 +41,8 @@ export const ENDPOINTS = {
 	todo: {
 		get: {
 			all: 'todolist',
-			byId: 'todolist'
+			byId: 'todolist',
+			suggestions: 'todolist/tasks'
 		},
 		post: {
 			create: 'todolist'

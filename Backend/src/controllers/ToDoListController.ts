@@ -1,6 +1,15 @@
 import { Response, Request, NextFunction } from "express"
 import ToDoList, {ITodoList} from "../models/ToDoListModel"
 
+import { Configuration, OpenAIApi } from 'openai'
+import configs from "../config/configs";
+
+const config = new Configuration({
+	apiKey: configs.OPENAI_API_KEY,
+})
+
+const openai = new OpenAIApi(config)
+
 export default class ToDoListController {
 	public static async getToDoLists( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
@@ -89,6 +98,33 @@ export default class ToDoListController {
 			} else {
 				return res.status(404).json({message: "ToDoList not found"})
 			}
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	public static async giveHelpForToDoList( req: Request, res: Response, next: NextFunction ): Promise<Response> {
+		try {
+			const { id } = req.params
+			const toDoList: ITodoList | null = await ToDoList.findById(id)
+			if (!toDoList) {
+				return res.status(404).json({message: "ToDoList not found"})
+			}
+			// const response: any = await openai.createCompletion({
+			// 	model: 'text-davinci-003',
+			// 	prompt: `This is a list of tasks that need to be done: ${toDoList.Tasks.map((task: any) => task.Description).join(", ")}. I need help with:`,
+			// 	temperature: 0.9,
+    		// 	stop: '\n'
+			// })
+			console.log(toDoList.Tasks.map((task: any) => task.Description).join(", "))
+			console.log(`This is a list of tasks that need to be done: ${toDoList.Tasks.map((task: any) => task.Description).join(", ")}. I need help with:`)
+			const response: any = await openai.createCompletion({
+				model: 'text-davinci-003',
+				prompt: `This is a list of tasks that need to be done: ${toDoList.Tasks.map((task: any) => task.Description).join(", ")}. I need help with:`,
+				max_tokens: 200
+			})
+			return res.status(200).json({Suggestion: response.data.choices[0].text})
+
 		} catch (error) {
 			next(error)
 		}
