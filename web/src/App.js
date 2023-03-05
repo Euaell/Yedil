@@ -5,6 +5,7 @@ import {Login, Signup} from "./components/LoginSignUp";
 import {BlogsLayout} from "./components/BlogsLayout";
 import Authenticate from "./components/Authenticate";
 import {MyBlogsLayout} from "./components/myBlogs";
+import TodoList from "./components/ToDos";
 
 function App() {
 	return (
@@ -22,7 +23,7 @@ function App() {
 
 						<Route element={<Authenticate />}>
 							<Route path="myBlogs" element={<MyBlogsLayout />} />
-							<Route path="todos" element={<h1>todos</h1>} />
+							<Route path="todos" element={<TodoList />} />
 						</Route>
 
 					</Route>

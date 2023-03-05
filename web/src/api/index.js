@@ -45,6 +45,13 @@ export const ENDPOINTS = {
 		},
 		post: {
 			create: 'todolist'
+		},
+		put: {
+			update: 'todolist',
+			updateTask: 'todolist/tasks'
+		},
+		delete: {
+			deletebyId: 'todolist'
 		}
 	},
 	tags: {
