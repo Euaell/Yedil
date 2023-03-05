@@ -41,7 +41,8 @@ export default class BlogController {
 	public static async createBlog( req: Request, res: Response, next: NextFunction ): Promise<Response> {
 		try {
 			const { user } = req.body
-			const { Title, Content, Tags, Description } : { Title: string, Content: string, Tags: string[], Description: string } = req.body
+			const { Title, Content, Tags, Description, Picture } :
+				{ Title: string, Content: string, Tags: string[], Description: string, Picture: string } = req.body
 
 			const tags: Schema.Types.ObjectId[] = await Promise.all(Tags.map( async (tag: string) : Promise<Schema.Types.ObjectId> => {
 				const DbTag: ITag = await TagModel.findOne({ Name: tag })
@@ -54,7 +55,7 @@ export default class BlogController {
 				}
 			}))
 
-			const blog: IBlog = await Blog.create({ Title, Content, author: user._id, Tags: tags, Description })
+			const blog: IBlog = await Blog.create({ Title, Content, author: user._id, Tags: tags, Description, Picture })
 
 			for (const tag of tags) {
 				await TagModel.findByIdAndUpdate(tag, { $push: { Blogs: blog._id } })

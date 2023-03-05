@@ -1,6 +1,6 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../api";
-import {Card, Spin, Layout, Menu, Form, Input, Button, Upload, Select, Avatar, Tag} from "antd";
+import {Card, Spin, Layout, Menu, Form, Input, Button, Upload, Select, Avatar, Tag, message} from "antd";
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import {UploadOutlined} from "@ant-design/icons";
@@ -92,6 +92,7 @@ const CreateBlog = () => {
 	// TODO: add save to local storage feature
 	const [tagOptions, setTagOptions] = React.useState([])
 	const [markdown, setMarkdown] = React.useState('');
+	const [file, setFile] = React.useState(null);
 
 	const navigate = useNavigate()
 
@@ -156,6 +157,25 @@ const CreateBlog = () => {
 			...inputs,
 			"Tags": value.toString().split(',')
 		})
+	}
+
+	function handleFileUpload(file) {
+		const formData = new FormData();
+		formData.append('Thumb-nail', file);
+		createAPIEndpoint(ENDPOINTS.image.post.upload)
+			.post(formData)
+			.then((res) => {
+				console.log(res.data.data)
+				setInputs({
+					...inputs,
+					"Picture": res.data.data.secure_url
+				})
+				message.success('File uploaded successfully');
+			})
+			.catch((err) => {
+				console.log(err)
+				message.error('File upload failed.');
+			})
 	}
 
 	return (
@@ -225,9 +245,14 @@ const CreateBlog = () => {
 					>
 						<Upload
 							name="Picture"
-							action={"/upload.do"}
+							beforeUpload={(file) => {
+								setFile(file)
+								handleFileUpload(file)
+								return false
+							}}
 							listType="picture"
 							multiple={false}
+							accept={"image/*"}
 						>
 							<Button icon={<UploadOutlined />}>Click to upload</Button>
 						</Upload>

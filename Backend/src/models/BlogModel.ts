@@ -8,7 +8,6 @@ export interface IBlog extends Document {
 	author: Schema.Types.ObjectId
 	Tags: Schema.Types.ObjectId[]
 }
-// TODO: create a schema for TAGS, that has a name and a list of blogs that have that tag(used for search and filtering)
 
 const TodoListSchema: Schema<IBlog> = new Schema(
 	{
@@ -18,7 +17,7 @@ const TodoListSchema: Schema<IBlog> = new Schema(
 		},
 		Picture: {
 			type: String,
-			required: false
+			required: true
 		},
 		Description: {
 			type: String,

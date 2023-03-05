@@ -51,8 +51,12 @@ export const ENDPOINTS = {
 		post: {
 			create: 'tags'
 		}
+	},
+	image: {
+		post: {
+			upload: 'images'
+		}
 	}
-
 }
 
 export const createAPIEndpoint = (endpoint) => {
