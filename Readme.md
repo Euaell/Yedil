@@ -1,6 +1,8 @@
 # Yedil (የድል) 
 To-Do and Blogging Platform
 
+https://yedil-web.onrender.com/
+
 ## Requirements
 some requirements for a project that combines a to-do list and blogging platform:
 
