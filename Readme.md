@@ -2,8 +2,10 @@
 To-Do and Blogging Platform
 
 **Web:** https://yedil-web.onrender.com/
+
 **Backend:** https://yedil.onrender.com/
-**Api Documentation: ** https://documenter.getpostman.com/view/18732335/2s93Y6uKZS
+
+**Api Documentation:** https://documenter.getpostman.com/view/18732335/2s93Y6uKZS
 
 ## Requirements
 some requirements for a project that combines a to-do list and blogging platform:
